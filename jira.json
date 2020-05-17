@@ -1,0 +1,39 @@
+{
+  "variables": {
+    "aws_access_key": "",
+    "aws_secret_key": "",
+    "ami_users": "{{ env `AMI_USERS` }}"
+  },
+  "builders": [
+    {
+      "name": "aws",
+      "region": "us-east-1",
+      "ami_name": "Amazon Linux 2 Jira AMI {{timestamp}}",
+      "type": "amazon-ebs",
+      "access_key": "{{user `aws_access_key`}}",
+      "secret_key": "{{user `aws_secret_key`}}",
+      "instance_type": "t2.micro",
+      "ssh_username": "ec2-user",
+      "ami_users": "{{ user `ami_users` }}",
+      "source_ami_filter": {
+        "filters": {
+          "name": "amzn2-ami-hvm-*-x86_64-gp2",
+          "root-device-type": "ebs",
+          "virtualization-type": "hvm"
+        },
+        "owners": ["amazon"],
+        "most_recent": true
+      },
+      "tags": {
+        "Name": "Amazon Linux 2 Jira AMI {{ timestamp }}"
+      }
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "ansible",
+      "playbook_file": "ansible/site.yml",
+      "user": "ec2-user"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+---
+driver:
+  name: docker
+platforms:
+  - name: instance
+lint:
+  name: yamllint
+  options:
+    config-file: molecule/default/yaml-lint.yml

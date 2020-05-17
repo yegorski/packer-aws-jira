@@ -1,0 +1,5 @@
+---
+- name: Install Java 1.8
+  package:
+    name: "{{ java_packages }}"
+    state: present

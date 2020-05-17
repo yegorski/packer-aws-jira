@@ -1,0 +1,7 @@
+- name: Install JIRA
+  hosts: all
+  become: True
+  roles:
+    - base
+    - java
+    - jira

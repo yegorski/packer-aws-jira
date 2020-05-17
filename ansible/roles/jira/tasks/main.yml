@@ -1,0 +1,42 @@
+---
+- name: Ensure directories
+  file:
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner | default('root') }}"
+    group: "{{ item.group | default('root') }}"
+    mode: "{{ item.mode | default('0755') }}"
+    state: "{{ item.state | default('directory') }}"
+  with_items:
+    # - { dest: "/etc/init.d" }
+    # - { dest: "/etc/systemd/system" }
+    - { dest: "/opt/atlassian/jira", owner: "daemon", group: "daemon" }
+    - { dest: "/var/atlassian/application-data/jira", owner: "daemon", group: "daemon" }
+
+- name: Unarchive package
+  shell: |
+    cd /opt/atlassian/jira
+    curl -skL {{ jira_download_url }} | tar zxf - --strip-components 1
+    cd /opt/atlassian/jira/lib
+    chown -Rf daemon:daemon /opt/atlassian/jira
+  args:
+    creates: "/opt/atlassian/jira/bin/start-jira.sh"
+
+- name: Copy templates
+  template:
+    src: "./templates{{ item.dest }}.j2"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner | default('root') }}"
+    group: "{{ item.group | default('root') }}"
+    mode: "{{ item.mode | default('0644') }}"
+  with_items:
+    - { dest: "/etc/init.d/jira", mode: "0755" }
+    - { dest: "/etc/systemd/system/jira.service" }
+    - { dest: "/opt/atlassian/jira/bin/setenv.sh", owner: "daemon", group: "daemon", mode: "0755" }
+    - { dest: "/opt/atlassian/jira/conf/server.xml", owner: "daemon", group: "daemon" }
+
+- name: Start and enable service
+  systemd:
+    name: jira
+    daemon_reload: True
+    state: restarted
+    enabled: True

@@ -1,0 +1,16 @@
+---
+jira_jvm_minimum_memory: "384m"
+jira_jvm_maximum_memory: "1024m"
+
+jira_catalina_connector_proxyname: ~
+jira_catalina_connector_proxyport: ~
+
+jira_catalina_connector_scheme: "http"
+jira_catalina_connector_secure: "false"
+jira_catalina_context_path: ~
+
+jira_jvm_support_recommended_args: "-Datlassian.plugins.enable.wait=300"
+
+jira_session_timeout: "1800"
+
+jira_download_url: "https://downloads.atlassian.com/software/jira/downloads/atlassian-jira-software-7.13.0.tar.gz"
